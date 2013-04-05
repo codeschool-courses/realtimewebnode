@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: sans-serif; color: #333; }
+#chatters { width: 100px; margin: 0 1em 0 0; float: left; list-style: none; }
+#chatters, #chat-console { height: 300px; overflow: auto; padding: 1%;}
+#chat-console, #chatters, #chat-form input[type=text] { border: 1px solid #ccc; }
+#chat-console, #chat-form { margin-right: 7%; }
+#chat-form { margin-top: 1em; text-align: right; clear: both; }
+#chat-form input[type=text] { width: 80%; font-size: 120%; padding: 1%; }
+.connected { color: #8b0000; }
+/* http://hellohappy.org/css3-buttons/ */
+input[type=submit] { background-color: #eeeeee; background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc)); background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc); background-image: -moz-linear-gradient(top, #eeeeee, #cccccc); background-image: -ms-linear-gradient(top, #eeeeee, #cccccc); background-image: -o-linear-gradient(top, #eeeeee, #cccccc); background-image: linear-gradient(top, #eeeeee, #cccccc); border: 1px solid #ccc; border-bottom: 1px solid #bbb; border-radius: 3px; color: #333; font-size: 100%; padding: 8px 0; text-align: center; text-shadow: 0 1px 0 #eee; width: 150px; }
+input[type=submit]:hover { background-color: #dddddd; background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dddddd), color-stop(100%, #bbbbbb)); background-image: -webkit-linear-gradient(top, #dddddd, #bbbbbb); background-image: -moz-linear-gradient(top, #dddddd, #bbbbbb); background-image: -ms-linear-gradient(top, #dddddd, #bbbbbb); background-image: -o-linear-gradient(top, #dddddd, #bbbbbb); background-image: linear-gradient(top, #dddddd, #bbbbbb); border: 1px solid #bbb; border-bottom: 1px solid #999; cursor: pointer; text-shadow: 0 1px 0 #ddd; }
+input[type=submit]:active { border: 1px solid #aaa; border-bottom: 1px solid #888; -webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee; box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee; }
+</style>
+<title>chattr</title>
+</head>
+<body>
+	
+	<h1>chattr</h1>
+
+		<ul id="chatters"></ul>
+		<div id="chat-console"></div>
+
+		<form id="chat-form">
+			<input type="text" name="chat-input" id="chat-input" placeholder="type your message here ..." autofocus/><br/>
+			<input type="submit" value="send"/>
+		</form>
+	
+	
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	var server = io.connect('http://localhost:8080');
+	var chatters = document.getElementById('chatters');
+	var chat_input = document.getElementById('chat-input');
+	var chat_console = document.getElementById('chat-console');
+	var nickname;
+
+	function removeChatter( name ) {
+
+		var current_chatters = document.querySelectorAll('[data-name]'),
+			i,
+			ii = current_chatters.length;
+
+		for ( var i = 0; i < ii; i += 1 ) {
+
+			if ( name === current_chatters[i].getAttribute('data-name') ) {
+
+				current_chatters[i].parentNode.removeChild( current_chatters[i] );
+				break;
+
+			}
+
+		}
+
+	}
+
+	function insertChatter( name ) {
+
+		var new_chatter = document.createElement('li');
+		new_chatter.setAttribute( 'data-name', name );
+		new_chatter.setAttribute( 'class', 'connected' );
+		new_chatter.innerHTML = name;
+		chatters.appendChild( new_chatter );
+
+	}
+
+	function insertMessage( message ) {
+
+		var new_message = document.createElement('span');
+		new_message.innerHTML = message + '<br/>';
+		chat_console.appendChild( new_message );
+
+	}
+
+	document.getElementById('chat-form').onsubmit = function(e) {
+
+		e.preventDefault();
+		server.emit( 'messages', chat_input.value );
+		insertMessage( nickname + ' : ' + chat_input.value );
+		chat_input.value = null;
+
+	};
+
+	server.on( 'messages', function( data ) {
+
+		insertMessage( data );
+
+	});
+
+	server.on( 'connect', function( data ) {
+
+		chat_console.innerHTML = '<span class="connected">connected to the chat server</span><br/>';
+		nickname = prompt( 'what is your nickanme?' );
+		server.emit( 'join', nickname );
+
+	});
+
+	server.on( 'add chatter', insertChatter );
+	server.on( 'remove chatter', removeChatter );
+	</script>
+	
+</body>
+</html>

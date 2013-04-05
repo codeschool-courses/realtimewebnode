@@ -1,0 +1,31 @@
+{
+  "name": "chattr",
+  "description": "A simple chat server based on the Real Time Web with Node.js codeschool class.",
+  "version": "0.1.0",
+  "author": {
+    "name": "dan entous",
+    "email": "contact@pennlinepublishing.com"
+  },
+  "contributors": [
+    {
+      "name": "dan entous",
+      "email": "contact@pennlinepublishing.com"
+    }
+  ],
+  "dependencies": {
+    "express": "3.1.0",
+    "redis": "0.8.2",
+    "socket.io": "0.9.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dan-nl/realtimewebnode.git"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "readme": "# Real Time Web With Node.js\n\nThis is the code for the [Real Time Web with Node.js](http://www.codeschool.com/courses/real-time-web-with-nodejs) demo app.\n\n## redis\n\nYou’ll need to make sure you have a redis server running in order to use the application see the [Redis Quick Start](http://redis.io/topics/quickstart) for information on installing redis.\n\n## Install\n\nThe fastest way to get __chattr__ up and running:\n\n * On Mac or Linux, make sure you have [nodejs][nodejs] and [npm][npm] installed\n\n```\ngit clone git@github.com:dan-nl/realtimewebnode.git\ncd realtimewebnode\nnpm install\nnpm start\n```",
+  "readmeFilename": "Readme.md",
+  "_id": "chattr@0.1.0",
+  "_from": "chattr@"
+}
