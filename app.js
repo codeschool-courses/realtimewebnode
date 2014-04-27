@@ -3,14 +3,15 @@
 
 	'use strict';
 
-	var storeMessage,
+	var redisToGo,
+	redis,
+	redisClient,
+	storeMessage,
 	express = require( 'express' ),
 	app = express(),
 	http = require( 'http' ),
 	server = http.createServer(app),
 	io = require( 'socket.io' ).listen(server),
-	redis = require( 'redis' ),
-	redisClient = redis.createClient(),
 	path = require( 'path' ),
 	port = Number( process.env.PORT || 8080 ),
 	max_messages = 100;
@@ -24,6 +25,16 @@
 	app.get('/', function ( req, res ) {
 		res.sendfile( __dirname + '/index.html' );
 	});
+
+	if ( process.env.REDISTOGO_URL ) {
+		redisToGo = require( 'url' ).parse( process.env.REDISTOGO_URL );
+		redis = require( 'redis' );
+		redisClient = redis.createClient( redisToGo.port, redisToGo.hostname );
+		redisClient.auth( redisToGo.auth.split( ':' )[1] );
+	} else {
+		redis = require( 'redis' );
+		redisClient = redis.createClient();
+	}
 
 	redisClient.ping( function( reply ) {
 		if ( reply !== null && reply.indexOf( 'ECONNREFUSED' ) > -1 ) {
