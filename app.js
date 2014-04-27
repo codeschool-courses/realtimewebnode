@@ -10,8 +10,8 @@
 	express = require( 'express' ),
 	app = express(),
 	http = require( 'http' ),
-	server = http.createServer(app),
-	io = require( 'socket.io' ).listen(server),
+	server = http.createServer( app ),
+	io = require( 'socket.io' ).listen( server ),
 	path = require( 'path' ),
 	port = Number( process.env.PORT || 8080 ),
 	max_messages = 100;
@@ -78,7 +78,7 @@
 
 				messages.forEach( function( message ) {
 					message = JSON.parse( message );
-					client.emit( 'messages',message.name + ' : ' + message.data );
+					client.emit( 'messages', message.name + ' : ' + message.data );
 				});
 			});
 		});
