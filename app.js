@@ -28,7 +28,7 @@
 	redisClient.ping( function( reply ) {
 		if ( reply !== null && reply.indexOf( 'ECONNREFUSED' ) > -1 ) {
 			console.log( 'error: cannot connect with the redis server' );
-			process.exit(1);
+			process.exit( 'error: cannot connect with the redis server' );
 		}
 	});
 
