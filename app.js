@@ -84,9 +84,13 @@
 		});
 
 		client.on( 'messages', function( message ) {
-			client.get('nickname',function( error, name ) {
-				storeMessage( name, message );
-				client.broadcast.emit( 'messages', name + ' : ' + message );
+			client.get( 'nickname', function( error, name ) {
+				if ( message.indexOf( 'udacity' ) > -1 ) {
+					client.broadcast.emit( 'messages', name + ' : ' + '<p>Education is no longer a one-time event but a lifelong experience. Education should be less passive listening (no long lectures) and more active doing. Education should empower students to succeed not just in school but in life.</p><p>We are reinventing education for the 21st century by bridging the gap between real-world skills, relevant education, and employment. Our students will be fluent in new technology, modern mathematics, science, and critical thinking. They will marry skills with creativity and humanity to learn, think, and do. Udacians are curious and engaged world citizens.</p><p>Interested in working with us? View our openings.</p>' );
+				} else {
+					storeMessage( name, message );
+					client.broadcast.emit( 'messages', name + ' : ' + message );
+				}
 			});
 		});
 
