@@ -11,23 +11,40 @@
 	io = require( 'socket.io' ).listen(server),
 	redis = require( 'redis' ),
 	redisClient = redis.createClient(),
-	path = require( 'path' );
+	path = require( 'path' ),
+	port = Number( process.env.PORT || 8080 ),
+	max_messages = 100;
 
-	server.listen(8080);
-	app.use(express.static( path.join( __dirname, 'public' ) ) );
+	server.listen( port, function() {
+		console.log( "Listening on " + port );
+	});
+
+	app.use( express.static( path.join( __dirname, 'public' ) ) );
 
 	app.get('/', function ( req, res ) {
 		res.sendfile( __dirname + '/index.html' );
 	});
 
-	redisClient.on('error', function(err) { console.log( 'error : ' + err ); });
+	redisClient.ping( function( reply ) {
+		if ( reply !== null && reply.indexOf( 'ECONNREFUSED' ) > -1 ) {
+			console.log( 'error: cannot connect with the redis server' );
+			process.exit(1);
+		}
+	});
+
+	redisClient.on( 'error', function( err ) {
+		console.log( 'error : ' + err );
+	});
 
 	storeMessage = function( name, data ) {
-		var message = JSON.stringify({name:name, data:data});
+		var message = JSON.stringify({
+			name:name,
+			data:data
+		});
 
-		// store up to 100 messages
-		redisClient.lpush('messages', message, function(error, response){
-			redisClient.ltrim('messages', 0, 100);
+		// store up to max_messages
+		redisClient.lpush( 'messages', message, function( error, response ) {
+			redisClient.ltrim( 'messages', 0, max_messages );
 		});
 	};
 

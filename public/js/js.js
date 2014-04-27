@@ -4,6 +4,11 @@
 
 	'use strict';
 
+	if ( window.io === undefined ) {
+		console.log( 'oops ... socket.io did’t load' );
+		return;
+	}
+
 	var nickname,
 	server = io.connect('http://localhost:8080'),
 	chatters = document.getElementById('chatters'),
