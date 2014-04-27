@@ -10,18 +10,23 @@
 	}
 
 	var nickname,
-	server = io.connect('http://localhost:8080'),
-	chatters = document.getElementById('chatters'),
-	chat_input = document.getElementById('chat-input'),
-	chat_console = document.getElementById('chat-console');
+
+	server = io.connect(
+		'//' +
+		window.location.hostname +
+		( window.location.port ? ':' + window.location.port : '' )
+	),
+	chatters = document.getElementById( 'chatters' ),
+	chat_input = document.getElementById( 'chat-input' ),
+	chat_console = document.getElementById( 'chat-console' );
 
 	function removeChatter( name ) {
-		var current_chatters = document.querySelectorAll('[data-name]'),
-			i,
-			ii = current_chatters.length;
+		var i,
+		current_chatters = document.querySelectorAll( '[data-name]' ),
+		ii = current_chatters.length;
 
 		for ( i = 0; i < ii; i += 1 ) {
-			if ( name === current_chatters[i].getAttribute('data-name') ) {
+			if ( name === current_chatters[i].getAttribute( 'data-name' ) ) {
 				current_chatters[i].parentNode.removeChild( current_chatters[i] );
 				break;
 			}
@@ -43,7 +48,7 @@
 		chat_console.scrollTop = chat_console.scrollHeight;
 	}
 
-	document.getElementById('chat-form').onsubmit = function( evt ) {
+	document.getElementById( 'chat-form' ).onsubmit = function( evt ) {
 		evt.preventDefault();
 		server.emit( 'messages', chat_input.value );
 		insertMessage( nickname + ' : ' + chat_input.value );
