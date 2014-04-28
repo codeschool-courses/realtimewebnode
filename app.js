@@ -105,4 +105,5 @@
 			redisClient.flushall();
 		});
 	});
+
 }());
